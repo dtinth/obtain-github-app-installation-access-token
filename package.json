@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "@octokit/app": "^4.2.0",
+    "@types/node": "^13.9.1",
+    "@zeit/ncc": "^0.21.1",
+    "tkt": "^2.0.0"
+  },
+  "scripts": {
+    "prepublish": "ncc build src/main.ts -o dist -s"
+  }
+}
