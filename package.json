@@ -6,7 +6,10 @@
     "tkt": "^2.0.0"
   },
   "scripts": {
-    "prepublish": "ncc build src/main.ts -o dist -s"
+    "prepublish": "rm -rf dist && ncc build src/main.ts -o dist -s"
+  },
+  "bin": {
+    "obtain-github-app-installation-access-token": "./cli.js"
   },
   "name": "obtain-github-app-installation-access-token",
   "version": "1.0.0",
