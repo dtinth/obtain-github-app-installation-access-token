@@ -11,6 +11,10 @@
   "bin": {
     "obtain-github-app-installation-access-token": "./cli.js"
   },
+  "files": [
+    "cli.js",
+    "dist"
+  ],
   "name": "obtain-github-app-installation-access-token",
   "version": "1.0.0",
   "description": "A simple CLI to obtain a GitHub App Installation Access Token",
