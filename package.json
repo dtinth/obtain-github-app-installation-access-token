@@ -7,5 +7,24 @@
   },
   "scripts": {
     "prepublish": "ncc build src/main.ts -o dist -s"
-  }
+  },
+  "name": "obtain-github-app-installation-access-token",
+  "version": "1.0.0",
+  "description": "A simple CLI to obtain a GitHub App Installation Access Token",
+  "main": "index.js",
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dtinth/obtain-github-app-installation-access-token.git"
+  },
+  "keywords": [
+    "GitHub",
+    "Apps"
+  ],
+  "author": "Thai Pangsakulyanont <org.yi.dttvb@gmail.com> (http://dt.in.th/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dtinth/obtain-github-app-installation-access-token/issues"
+  },
+  "homepage": "https://github.com/dtinth/obtain-github-app-installation-access-token#readme"
 }
