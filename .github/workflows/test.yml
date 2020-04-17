@@ -6,6 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: yarn
+      - run: yarn prepare
       - id: auth
         run: |
           TOKEN="$(node cli ci ${{ secrets.GH_APP_CREDENTIALS_TOKEN }})"
