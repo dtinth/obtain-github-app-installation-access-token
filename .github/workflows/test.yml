@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: yarn
-      - run: npm i -g .
+      - run: sudo npm i -g .
       - name: Obtain GitHub App Installation Access Token
         id: githubAppAuth
         run: |
