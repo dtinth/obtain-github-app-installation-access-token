@@ -76,6 +76,18 @@
             </div>
           </div>
         </label>
+
+        <div class="mb-4">
+          <label class="block">
+            <span>Workflow script</span>
+            <textarea
+              :value="workflowScript"
+              class="form-textarea mt-1 block w-full focus:border-#656463 text-#bbeeff font-mono bg-#090807 border-#454443 whitespace-pre"
+              rows="16"
+              readonly
+            ></textarea>
+          </label>
+        </div>
       </template>
       <template v-else>
         <div class="text-xl text-#8b8685 ml-4">
@@ -124,6 +136,23 @@
           appId: '',
           installationId: '',
           privateKey: '',
+          workflowScript: [
+            `- name: Obtain GitHub App Installation Access Token`,
+            `  id: githubAppAuth`,
+            `  run: |`,
+            `    TOKEN="$(npx obtain-github-app-installation-access-token ci \${{ secrets.GH_APP_CREDENTIALS_TOKEN }})"`,
+            `    echo "::add-mask::$TOKEN"`,
+            `    echo "::set-output name=token::$TOKEN"`,
+            `- name: Use the obtained token`,
+            `  run: |`,
+            `    curl -X POST -H 'Content-Type: application/json' \\`,
+            `      -d '{"context":"test","state":"success"}' \\`,
+            `      "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA?access_token=$GITHUB_TOKEN"`,
+            `  env:`,
+            `    GITHUB_TOKEN: \${{ steps.githubAppAuth.outputs.token }}`,
+          ]
+            .map((x) => `      ${x}`)
+            .join('\n'),
         },
         computed: {
           results() {
@@ -133,9 +162,10 @@
                 installationId: this.installationId,
                 privateKey: this.privateKey,
               })
-              return { token: btoa(unescape(encodeURIComponent(out))) }
+              return {
+                token: btoa(unescape(encodeURIComponent(out))),
+              }
             }
-            // return { token: 'test' }
             return null
           },
         },
