@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      obtain-github-app-installation-access-token ci token generator
+    </title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/comic-mono@0.0.1/index.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindtinth@2.1.0/dist/tailwindtinth.min.css"
+    />
+  </head>
+  <body class="bg-#353433 text-#e9e8e7 p-6 sm:pl-16 pt-16">
+    <h1 class="text-2xl font-bold text-#8b8685 mb-4">
+      <a
+        href="https://github.com/dtinth/obtain-github-app-installation-access-token"
+        class="text-#bbeeff"
+        >obtain-github-app-installation-access-token</a
+      >
+      ci token generator
+    </h1>
+    <div id="app" class="max-w-2xl">
+      <div class="mb-4 flex">
+        <label class="block w-48">
+          <span>GitHub App ID</span>
+          <input
+            v-model="appId"
+            class="form-input mt-1 block bg-#090807 border-#454443 focus:border-#656463 text-#bbeeff"
+            size="10"
+            placeholder="12345"
+          />
+        </label>
+        <label class="block w-48">
+          <span>Installation ID</span>
+          <input
+            v-model="installationId"
+            class="form-input mt-1 block bg-#090807 border-#454443 focus:border-#656463 text-#bbeeff"
+            size="16"
+            placeholder="1234567"
+          />
+        </label>
+      </div>
+
+      <template>
+        <div class="mb-4">
+          <label class="block">
+            <span>GitHub App Private Key</span>
+            <textarea
+              v-model="privateKey"
+              class="form-textarea mt-1 block w-full focus:border-#656463 text-#bbeeff font-mono"
+              :class="[dropping ? 'bg-green-800 border-green-500' : 'bg-#090807 border-#454443']"
+              rows="2"
+              placeholder="Paste in (or drop) your private key"
+            ></textarea>
+          </label>
+        </div>
+      </template>
+
+      <template v-if="results">
+        <h2 class="mt-12 mb-4 text-#d7fc70 font-bold text-xl">Result</h2>
+        <label class="flex items-baseline mb-4">
+          <span class="flex-none w-56 font-mono">GH_APP_CREDENTIALS_TOKEN</span>
+          <div class="flex-auto">
+            <copy-item :value="results.token"></copy-item>
+            <div class="mx-3 mt-2 text-#8b8685 italic">
+              Put this into your repository secrets.
+            </div>
+          </div>
+        </label>
+      </template>
+      <template v-else>
+        <div class="text-xl text-#8b8685 ml-4">
+          &uarr; the result will appear once you filled out the form
+        </div>
+      </template>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.js"></script>
+    <script>
+      {
+        const html = String.raw
+        Vue.component('copy-item', {
+          props: ['value'],
+          template: html`<span class="flex items-baseline">
+            <span class="flex-auto mr-2">
+              <input
+                readonly
+                class="form-input bg-#090807 border-#454443 focus:border-#656463 text-#bbeeff w-full block font-mono"
+                ref="input"
+                :value="value"
+              />
+            </span>
+            <span class="flex-none">
+              <button
+                class="border border-#d7fc70 bg-transparent text-#d7fc70 py-2 px-4 rounded"
+                @click="copyTextToClipboard()"
+              >
+                Copy
+              </button></span
+            >
+          </span>`,
+          methods: {
+            copyTextToClipboard() {
+              this.$refs.input.select()
+              document.execCommand('copy')
+            },
+          },
+        })
+      }
+
+      vm = new Vue({
+        el: '#app',
+        data: {
+          dropping: false,
+          appId: '',
+          installationId: '',
+          privateKey: '',
+        },
+        computed: {
+          results() {
+            if (this.appId && this.installationId && this.privateKey) {
+              const out = JSON.stringify({
+                appId: this.appId,
+                installationId: this.installationId,
+                privateKey: this.privateKey,
+              })
+              return { token: btoa(unescape(encodeURIComponent(out))) }
+            }
+            // return { token: 'test' }
+            return null
+          },
+        },
+        methods: {
+          copyTextToClipboard(text) {
+            var copyFrom = document.createElement('textarea')
+            copyFrom.textContent = text
+            document.body.appendChild(copyFrom)
+            copyFrom.select()
+            document.execCommand('copy')
+            copyFrom.blur()
+            document.body.removeChild(copyFrom)
+          },
+        },
+      })
+      window.ondragover = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        vm.dropping = true
+      }
+      window.ondragleave = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        vm.dropping = false
+      }
+      window.ondrop = async (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        vm.dropping = false
+        try {
+          const dt = e.dataTransfer
+          const files = dt.files
+          const key = await files[0].text()
+          if (!key.startsWith('-----BEGIN RSA PRIVATE KEY-----')) {
+            throw new Error('Expected an RSA private key file.')
+          }
+          vm.privateKey = key
+        } catch (e) {
+          alert(String(e))
+        }
+      }
+    </script>
+  </body>
+</html>
