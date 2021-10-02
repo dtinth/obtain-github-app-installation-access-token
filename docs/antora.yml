@@ -1,0 +1,5 @@
+name: obtain-github-app-installation-access-token
+version: master
+title: 'obtain-github-app-installation-access-token'
+nav:
+  - modules/ROOT/nav.adoc

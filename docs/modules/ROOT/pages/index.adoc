@@ -1,0 +1,44 @@
+= obtain-github-app-installation-access-token
+:experimental:
+
+You want to set up a CI workflow for your project that can access other repositories on GitHub.
+You don’t want to use your personal access token, because it gives access to all of your repositories.
+You want an access token that has fine-grained permissions, giving access to only the repositories you want to use.
+This tool helps you get that access token.
+
+== Set up a GitHub App
+
+. Go to https://github.com/settings/apps[Your Developer settings page] (or your organization’s page: menu:Settings[Developer Settings>GitHub Apps])
+. Click btn:[New GitHub App].
+. Enter the name of your app.
+. Enter a dummy URL for Callback URL.
+. Uncheck menu:Webhook[Active].
+. Add the required permissions. These actions are recommended:
+  * menu:Contents[Read & write]
+  * menu:Workflows[Read & write]
+. Select whether the GitHub App can be installed on your account only or any account.
+. Note the **App ID**.
+. Scroll down to the **Private keys** section, and click btn:[Generate a private key].
+. In the navigation on the left, click btn:[Install App].
+. Click btn:[Install].
+. Select the repositories you want the app to be able to access, then click btn:[Install].
+. Note the **Installation ID** in the URL.
+
+== Get a CI token
+
+This CI token is a bundle of your App ID, Installation ID, and the private key. Make sure you have these information ready:
+
+* App ID
+* Installation ID
+* Private key file
+
+To generate a CI token, follow these steps:
+
+. Go to the https://dtinth.github.io/obtain-github-app-installation-access-token/[CI token generator webpage].
+. Fill in the *App ID* and the *Installation ID* fields.
+. Drag the private key file into the *GitHub App Private Key* field.
+. Copy the resulting `GH_APP_CREDENTIALS_TOKEN`.
+
+== Use it
+
+The CI token generator will also generate a workflow snippet that you can use in GitHub Actions.
